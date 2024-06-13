@@ -1,0 +1,13 @@
+aiohttp
+aioresponses
+argparse
+asyncio
+coverage
+flask
+pyfiglet
+pylint
+pytest
+pytest-asyncio
+python-dotenv
+requests
+watchdog
