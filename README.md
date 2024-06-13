@@ -12,7 +12,7 @@ Leveraging Hai trough our API. This repository contains a few tools allowing ret
   - [Docker Usage](#docker-usage)
   - [CLI Usage](#cli-usage)
   - [CLI Example](#cli-examples)
-  - [Webhook Enpoint](#webhook-endpoint)
+  - [Webhook Endpoint](#webhook-endpoint)
   - [Testing](#testing)
   - [Contributing](#contributing)
   - [Troubleshooting](#troubleshooting)
