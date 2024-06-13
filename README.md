@@ -1,12 +1,63 @@
 ![image info](images/haigh-on-h1onh1.webp)
 
-# H(a)igh on HackerOne
+# Hai on Hackerone
 
-This script allows retrieving and processing reports from the HackerOne API. It can fetch reports matching specified filters, send them to the HackerOne AI for triage, and perform actions like posting comments and populating custom fields based on the AI response.
+Leveraging Hai trough our API. This repository contains a few tools allowing retrieving and processing reports from the HackerOne API. It can fetch reports matching specified filters, send them to the Hai (HackerOne's Copilot) for triage, and perform actions like posting comments and populating custom fields based on the AI response.
 
-## Usage
+## Table of Contents
 
-The script accepts the following arguments:
+- [Hai on Hackerone](#hai-on-hackerone)
+  - [Features at a Glance](#features-at-a-glance)
+  - [Quick Start](#quick-start)
+  - [Docker Usage](#docker-usage)
+  - [CLI Usage](#cli-usage)
+  - [CLI Example](#cli-examples)
+  - [Webhook Enpoint](#webhook-endpoint)
+  - [Testing](#testing)
+  - [Contributing](#contributing)
+  - [Troubleshooting](#troubleshooting)
+
+## Features at a Glance
+
+- **Fetching Reports**: The script retrieves reports that match our specified filters, such as program, severity, and state. This allows us to focus on the most critical issues first.
+
+- **AI-Powered Triage**: Reports are sent to HackerOne AI for assessment. The AI evaluates each report and provides insights, helping us determine the validity and urgency of the issues.
+
+- **Automated Actions**: Based on the AI’s response, the script can post private comments on reports, update custom fields, and export responses to a CSV file for further analysis.
+
+## Quick Start
+
+To install this project, you can use Docker Compose. Here are the steps:
+
+1. Clone the repository: `git clone hai-on-hackerone`
+2. Create a new file named `.env` in the root directory of the project with the following content (see .env.sample)
+
+```bash
+API_NAME=
+API_KEY=
+PROGRAM_HANDLE=
+WEBHOOK_SECRET=
+CUSTOM_FIELD_ID_VALIDITY=
+CUSTOM_FIELD_ID_COMPLEXITY=
+CUSTOM_FIELD_ID_PRODUCT_AREA=
+CUSTOM_FIELD_ID_SQUAD_OWNER=
+OWNERSHIP_FILE="./cli/config/ownership.csv.sample"
+CSV_OUTPUT_FILE="./cli/data/hai-on-hackerone-output.csv"
+```
+
+## Docker Usage
+
+To run the script, simply execute the following command:
+
+```bash
+docker-compose up
+```
+
+This will start the Python script and begin processing reports.
+
+## CLI Usage
+
+The CLI tool accepts the following arguments:
 
 - `-Fr, --rating`: Filter by severity **rating**
 - `-Fs, --state`: Filter by report **state**
@@ -16,71 +67,47 @@ The script accepts the following arguments:
 - `-csv, --csv_output`: Output HackerOne AI responses to CSV file
 - `-v, --verbose`: Increase output verbosity
 
-## Examples
+## CLI Examples
 
 This will retrieve critical vulnerability reports for the specified program:
 
-```
+```python
 python3 main.py -Fr critical
 ```
 
 This will retrieve a specific report to be assessed on validity and its custom field will be updated:
 
-```
-python3 main.py -r 2332211 --custom_field_hai
-```
-
-## Requirements
-
-- Python 3.6+
-- `requests` module
-- HackerOne API credentials (API token, API identifier)
-
-## About credentials
-
-Ensure that you grant HAI access to the API token.
-
-To do this, navigate to https://support-app.inverselink.com/support/better_features/hai and select 'Enable for users'. Then, input the name of the API token and press 'Enable'.
-
-## Setup
-
-1. Clone the repository
-2. Install dependencies: `pip3 install -r requirements.txt`
-3. Create an `.env` file (`touch .env`)
-4. Add credentials with Hai access to `.env` file, see example:
-
-```
-API_NAME=<name>
-API_KEY=<token>
-PROGRAM_ID=<handle>
+```python
+python3 main.py -r 12345 --custom_field_hai
 ```
 
-5. Run the script with desired options. See usage for tips.
+## Webhook Endpoint
 
-## Features
+The project also includes a webhook endpoint that can be used to receive and process reports. To use this endpoint, you'll need to configure your HackerOne API settings in the `.env` file.
 
-- Retrieve reports matching filters for program, severity, state
-- Output reports as PDFs (if enabled for program)
-- Send reports to HackerOne AI for triage
-- Post private comments on reports based on AI decision
-- Update custom fields on reports based on AI
+Here's an example of how you can use the webhook endpoint:
 
-## To Do
+```bash
+curl -X POST \
+  http://localhost:5000/webhook \
+  -H 'Content-Type: application/json' \
+  -d '{"data": {"report": {"id": "12345"}}}'
+```
 
-- Improve error handling
-- Add more tests
-- Async report retrieval
+This will trigger the webhook endpoint to process the report with ID `12345`.
 
-## Useful resources
+## Testing
 
-- https://docs.google.com/document/d/1BK-kAvcJ9q8hwExKCW2yS0ESeuD4LX4upzfA3QEGUtI/edit
-- https://hackerone.atlassian.net/wiki/spaces/TRIAGE/pages/3878125575/Triage+HAI+Cheat+Sheet
-- https://api.hackerone.com/customer-resources/?python#customer-resources
+Tests will run on each pull request and merge to the primary branch. To run them locally:
+
+```bash
+pytest 
+```
 
 ## Contributing
 
 Contributions are welcome! Please open an issue or PR for any enhancements.
 
-## Credits
+## Troubleshooting
 
-Credits go to Dane Sherrets (@dane) and Antoine Williams-Baisy (@antoine) for the first-time inspiration. This project is forked from this [repository](https://gitlab.inverselink.com/hackerone/engineering_and_product/sa-team/disclosure-assistance-hai/-/tree/main?ref_type=heads).
+If you encounter any issues, please report them.

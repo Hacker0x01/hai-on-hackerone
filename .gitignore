@@ -5,6 +5,7 @@
 *.csv
 
 #directories
+.vscode/
 webserver/data/
 cli/data/
 cli/htmlcov/
