@@ -8,7 +8,7 @@ Provide a brief summary of the changes or features being added in this merge req
 
 Example:
 
-_"This MR is linked to issue X. I choose to split up issue X in 3 parts, because ..."_
+_"This MR is linked to issue X. I chose to split up issue X in 3 parts, because ..."_
 
 ### 🧪 Test Plan
 

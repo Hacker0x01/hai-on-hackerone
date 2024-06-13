@@ -5,10 +5,11 @@ Utility functions for the CLI.
 import codecs
 import json
 import re
+from enum import StrEnum
 
 import pyfiglet
 
-class bcolors:
+class bcolors(StrEnum):
     """
     A class that defines ANSI escape codes for text colors in the terminal.
     """

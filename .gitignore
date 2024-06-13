@@ -5,6 +5,7 @@
 *.csv
 
 #directories
+.git/
 .vscode/
 webserver/data/
 cli/data/

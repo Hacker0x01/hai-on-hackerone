@@ -1,2 +1,10 @@
 [MESSAGES CONTROL]
 disable=W0603,C0103,R0913,C0301,R0914,E0401
+
+; Explanation of disabled linter messages:
+; W0603: Global variable used
+; C0103: Invalid name
+; R0913: Too many arguments
+; C0301: Line too long
+; R0914: Too many local variables
+; E0401: Unable to import module

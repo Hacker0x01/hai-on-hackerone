@@ -3,14 +3,15 @@ FROM python:3.12-alpine
 # Set the work directory to the app folder.
 WORKDIR /hai-on-hackerone
 
+# Install Python dependencies.
+COPY requirements.txt /hai-on-hackerone
+RUN  pip3 install --no-cache-dir -r requirements.txt
+
 # Copy only the relevant Python files into the container.
 COPY requirements.txt /hai-on-hackerone
 COPY webserver /hai-on-hackerone/webserver
 COPY watcher /hai-on-hackerone/watcher
 COPY cli /hai-on-hackerone/cli
-
-# Install Python dependencies.
-RUN  pip3 install --no-cache-dir -r requirements.txt
 
 # Expose the port that the app runs on.
 EXPOSE 5000

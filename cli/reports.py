@@ -37,7 +37,7 @@ async def get_all_reports(
     url = "https://api.hackerone.com/v1/reports"
     pageNum = 1
 
-    while url != "None":
+    while url:
         params = {
             'filter[program][]': [program_handle],
             'filter[severity][]': [severity],
@@ -63,7 +63,7 @@ async def get_all_reports(
             pageNum += 1
         else:
             print(f"{bcolors.OKCYAN}No Further Pages{bcolors.ENDC}")
-            url = "None"
+            url = None
 
 async def get_reports(reportIDs, severity, state, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose):
     """
