@@ -22,7 +22,7 @@ api_name, api_key, program_handle, headers = load_api_variables()
 cf_1, cf_2, cf_3, cf_4 = load_actions_variables()
 csv_output_file = load_csv_output_file()
 
-def hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, reportid, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose):
+def hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report_id, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose):
     """
     Run actions based on the predictions.
 
@@ -39,7 +39,7 @@ def hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedVal
     - predictedOwnershipReasoning: The reasoning behind the predicted ownership.
     - productArea: The product area of the report.
     - squadOwner: The squad owner of the report.
-    - reportid: The ID of the report.
+    - report_id: The ID of the report.
     - comment_hai_flag: A flag indicating whether to post a private comment.
     - custom_field_hai_flag: A flag indicating whether to update custom fields.
     - csv_output_flag: A flag indicating whether to write to a CSV file.
@@ -50,14 +50,14 @@ def hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedVal
     """
     if comment_hai_flag:
         print(f"{bcolors.OKBLUE}Posting Private Comment...{bcolors.ENDC}")
-        post_private_comment(reportid, predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, verbose)
+        post_private_comment(report_id, predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, verbose)
         print(f"{bcolors.OKGREEN}Private Comment is successfully posted{bcolors.ENDC}")
     if custom_field_hai_flag:
         print(f"{bcolors.OKBLUE}Updating Custom Fields...{bcolors.ENDC}")
-        update_custom_field(reportid, predictedValidity, predictedComplexity, productArea, squadOwner, verbose)
+        update_custom_field(report_id, predictedValidity, predictedComplexity, productArea, squadOwner, verbose)
         print(f"{bcolors.OKGREEN}Custom Fields have been successfully updated{bcolors.ENDC}")
     if csv_output_flag:
-        write_to_csv(reportid, predictedValidity, predictedComplexity, productArea, squadOwner)
+        write_to_csv(report_id, predictedValidity, predictedComplexity, productArea, squadOwner)
 
 def post_private_comment(report, predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, verbose):
     """
@@ -165,12 +165,12 @@ def update_custom_field(report, predictedValidity, predictedComplexity, productA
             print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
             print(r.json())
 
-def write_to_csv(reportid, predictedValidity, predictedComplexity, productArea, squadOwner):
+def write_to_csv(report_id, predictedValidity, predictedComplexity, productArea, squadOwner):
     """
     Writes the provided data to a CSV file.
 
     Args:
-        reportid (str): The report ID.
+        report_id (str): The report ID.
         predictedValidity (str): The predicted validity.
         predictedComplexity (str): The predicted complexity.
         productArea (str): The product area.
@@ -184,6 +184,6 @@ def write_to_csv(reportid, predictedValidity, predictedComplexity, productArea, 
         csv_writer = csv.writer(file)
         if file.tell() == 0:
             csv_writer.writerow(["Report ID", "Predicted Validity", "Predicted Difficulty", "Product Area", "Squad Owner"])
-        csv_writer.writerow([reportid, predictedValidity, predictedComplexity, productArea, squadOwner])
+        csv_writer.writerow([report_id, predictedValidity, predictedComplexity, productArea, squadOwner])
     print(f"{bcolors.OKGREEN}The CSV output file has been successfully updated{bcolors.ENDC}")
     return "Done"
