@@ -16,9 +16,9 @@ def load_api_variables():
       program_handle (str): The handle of the program.
       headers (dict): The headers for API requests.
     """
-    api_name = os.getenv("API_NAME")
-    api_key = os.getenv("API_KEY")
-    program_handle = os.getenv("PROGRAM_HANDLE")
+    api_name = os.environ["API_NAME"]
+    api_key = os.environ["API_KEY"]
+    program_handle = os.environ["PROGRAM_HANDLE"]
 
     headers = {'Accept': 'application/json'}
     return api_name, api_key, program_handle, headers
