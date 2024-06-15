@@ -2,7 +2,7 @@
 """
 This is the main file for the webserver. It contains the Flask app and the webhook endpoint.
 """
-import json
+
 import os
 import hmac
 from flask import Flask, request
@@ -37,8 +37,8 @@ def webhook():
                 with open('/hai-on-hackerone/webserver/data/report_ids.txt', 'a', encoding='UTF-8') as file:
                     file.write(f'{report_id}\n')
 
-            return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+            return {"success": True}, 200
         else:
-            return json.dumps({"success": False, "error": "Incorrect signature"}), 401, {"ContentType": "application/json"}
+            return {"success": False, "error": "Incorrect signature"}, 401
     else:
-        return json.dumps({"success": False, "error": "Missing 'X-H1-Signature' header"}), 400, {"ContentType": "application/json"}
+        return {"success": False, "error": "Missing 'X-H1-Signature' header"}, 400
