@@ -36,7 +36,7 @@ class TestMain(unittest.TestCase):
 
     def test_parse_args(self):
         """Test the parse_args function."""
-        sys.argv = ['main.py', '-Fr', 'none', '-Fs', 'new', '-Fref', '-r', '123', '-ch', '-cfh', '-csv', '-v']
+        sys.argv = ['main.py', '-r', 'none', '-s', 'new', '-i', '--report', '123', '-c', '-f', '-o', '-v']
         args = parse_args()
         self.assertEqual(args.rating, 'none')
         self.assertEqual(args.state, 'new')
@@ -46,6 +46,15 @@ class TestMain(unittest.TestCase):
         self.assertEqual(args.custom_field_hai, True)
         self.assertEqual(args.csv_output, True)
         self.assertEqual(args.verbose, True)
+
+    @patch('sys.exit')
+    @patch('argparse.ArgumentParser.print_help')
+    def test_no_args(self, mock_print_help, mock_exit):
+        """Test the parse_args function with no arguments."""
+        sys.argv = ['main.py'] 
+        parse_args()
+        mock_print_help.assert_called_once()
+        mock_exit.assert_called_once_with(1)
 
 if __name__ == '__main__':
     unittest.main()

@@ -59,12 +59,13 @@ This will start the Python script and begin processing reports.
 
 The CLI tool accepts the following arguments:
 
-- `-Fr, --rating`: Filter by severity **rating**
-- `-Fs, --state`: Filter by report **state**
-- `-r, --report`: Specific report ID(s) to retrieve
-- `-ch, --comment_hai`: Post private comment based on HackerOne AI response
-- `-cfh, --custom_field_hai`: Update custom fields based on HackerOne AI response
-- `-csv, --csv_output`: Output HackerOne AI responses to CSV file
+- `--report`: Specific report ID(s) to retrieve
+- `-r, --rating`: Filter reports based on severity **rating**
+- `-s, --state`: Filter reports based on report **state**
+- `-i, --reference`: Filter reports based on **NOT** having an **issue** tracker reference
+- `-c, --comment_hai`: Post private comment based on HackerOne AI response
+- `-f, --custom_field_hai`: Update custom fields based on HackerOne AI response
+- `-o, --csv_output`: Output HackerOne AI responses to CSV file
 - `-v, --verbose`: Increase output verbosity
 
 ## CLI Examples

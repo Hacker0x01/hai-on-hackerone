@@ -13,7 +13,8 @@ from config import load_api_variables
 api_name, api_key, program_handle, headers = load_api_variables()
 
 async def get_all_reports(
-        severity, state,
+        severity,
+        state,
         reference,
         comment_hai_flag,
         custom_field_hai_flag,
