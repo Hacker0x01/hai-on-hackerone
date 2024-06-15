@@ -73,13 +73,13 @@ The CLI tool accepts the following arguments:
 This will retrieve critical vulnerability reports for the specified program:
 
 ```python
-python3 main.py -Fr critical
+python3 main.py -r critical
 ```
 
 This will retrieve a specific report to be assessed on validity and its custom field will be updated:
 
 ```python
-python3 main.py -r 12345 --custom_field_hai
+python3 main.py --report 12345 --custom_field_hai
 ```
 
 ## Webhook Endpoint
