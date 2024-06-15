@@ -5,7 +5,7 @@ WORKDIR /hai-on-hackerone
 
 # Install Python dependencies.
 COPY requirements.txt /hai-on-hackerone
-RUN  pip3 install --no-cache-dir -r requirements.txt
+RUN  pip3 install --no-cache-dir --disable-pip-version-check -r requirements.txt
 
 # Copy only the relevant Python files into the container.
 COPY requirements.txt /hai-on-hackerone
