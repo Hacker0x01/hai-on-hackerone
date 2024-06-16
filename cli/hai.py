@@ -46,7 +46,7 @@ async def send_to_hai(report, verbose):
 
     """
     with open(ownership, encoding='UTF-8') as file:
-        csv_data = [line.strip() for line in file.readlines()]
+        csv_data = [line.strip() for line in file.readlines() if line.strip()]
 
     prompts = [
         {
