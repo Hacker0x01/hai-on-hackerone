@@ -66,15 +66,13 @@ def parse_json_with_control_chars(json_string):
         json_string (str): The JSON string to parse.
 
     Returns:
-        dict: The parsed JSON data.
-
-    Raises:
-        json.JSONDecodeError: If the JSON string is invalid.
+        dict or None: The parsed JSON data, or None if the JSON string is invalid.
     """
-    data = None
+
     try:
         json_string = codecs.escape_decode(json_string)[0].decode('UTF-8')
         data = json.loads(json_string)
     except json.JSONDecodeError as e:
         print(f"Invalid JSON: {e}")
+        data = None
     return data
