@@ -15,5 +15,5 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run unit tests
-      working-directory: ./cli/tests 
-      run: python -m unittest discover .
+      working-directory: ./cli
+      run: python -m unittest discover tests
