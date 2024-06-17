@@ -17,7 +17,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run unit tests
       run: |
-        echo "Running tests...
+        echo "Running tests..."
         cd cli/
         python3 -m unittest discover tests
         echo "All tests passed!"
