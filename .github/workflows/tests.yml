@@ -19,5 +19,7 @@ jobs:
       run: |
         echo "Running tests..."
         cd cli/
+        PAD=$(pwd)
+        echo $PAD
         python3 -m unittest discover tests
         echo "All tests passed!"
