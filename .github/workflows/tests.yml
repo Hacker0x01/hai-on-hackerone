@@ -17,4 +17,4 @@ jobs:
     - name: Run unit tests
       env:
         PYTHONPATH: ${{ github.workspace }}/cli
-      run: python -m unittest discover tests/
+      run: python -m unittest discover cli/tests/
