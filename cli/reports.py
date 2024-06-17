@@ -48,15 +48,20 @@ async def get_all_reports(
         if reference:
             params['filter[issue_tracker_reference_id__null]'] = [reference]
 
-        r = requests.get(
-            url,
-            auth=(settings.api_name, settings.api_key),
-            params=params,
-            headers=settings.headers,
-            timeout=(5, 10)
-        )
-        response = r.json()
-        print("Results Page: "+ str(pageNum))
+        try:
+            r = requests.get(
+                url,
+                auth=(settings.api_name, settings.api_key),
+                params=params,
+                headers=settings.headers,
+                timeout=(5, 10)
+            )
+            r.raise_for_status()
+            response = r.json()
+            print("Results Page: "+ str(pageNum))
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+            raise
         await show_reports(response, verbose, comment_hai_flag, custom_field_hai_flag, csv_output_flag)
 
         if "next" in response["links"]:
@@ -87,22 +92,27 @@ async def get_reports(report_ids, severity, state, comment_hai_flag, custom_fiel
     reportList = []
     for report in report_ids:
         urlreport = url + str(report)
-
-        r = requests.get(
-            urlreport,
-            auth=(settings.api_name, settings.api_key),
-            params={
-                'filter[severity][]': [severity],
-                'filter[state][]': [state]
-            },
-            headers=settings.headers,
-            timeout=(5, 10)
-        )
-        response = r.json()
-        show_single_report(response)
-        predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner = await send_to_hai(report, verbose)
-        hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
-    print("_____________")
+        
+        try:
+            r = requests.get(
+                urlreport,
+                auth=(settings.api_name, settings.api_key),
+                params={
+                    'filter[severity][]': [severity],
+                    'filter[state][]': [state]
+                },
+                headers=settings.headers,
+                timeout=(5, 10)
+            )
+            r.raise_for_status()
+            response = r.json()
+            show_single_report(response)
+            predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner = await send_to_hai(report, verbose)
+            hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
+            print("_____________")
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+            raise
     if len(report_ids) == 1:
         print(f"{bcolors.OKCYAN}1 report has been successfully processed{bcolors.ENDC}")
     else:

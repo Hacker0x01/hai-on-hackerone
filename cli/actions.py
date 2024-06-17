@@ -103,16 +103,21 @@ def post_private_comment(report, predictedValidity, predictedValidityCertaintySc
         print(f"{bcolors.OKBLUE}Data that is sent to Hai{bcolors.ENDC}")
         print(data)
 
-    r = requests.post(
-        'https://api.hackerone.com/v1/reports/' + str(report) + '/activities',
-        auth=(settings.api_name, settings.api_key),
-        json=data,
-        headers=settings.headers,
-        timeout=(5, 10)
-    )
-    if verbose:
-        print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
-        print(r.json())
+    try:
+        r = requests.post(
+            'https://api.hackerone.com/v1/reports/' + str(report) + '/activities',
+            auth=(settings.api_name, settings.api_key),
+            json=data,
+            headers=settings.headers,
+            timeout=(5, 10)
+        )
+        r.raise_for_status()
+        if verbose:
+            print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+            print(r.json())
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        raise
 
 def update_custom_field(report, predictedValidity, predictedComplexity, productArea, squadOwner, verbose):
     """
@@ -150,16 +155,21 @@ def update_custom_field(report, predictedValidity, predictedComplexity, productA
             print(f"{bcolors.OKBLUE}Data that is sent to Hai{bcolors.ENDC}")
             print(data)
 
-        r = requests.post(
-            'https://api.hackerone.com/v1/reports/' + str(report) + '/custom_field_values',
-            auth=(settings.api_name, settings.api_key),
-            json=data,
-            headers=settings.headers,
-            timeout=(5, 10)
-        )
-        if verbose:
-            print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
-            print(r.json())
+        try:
+            r = requests.post(
+                'https://api.hackerone.com/v1/reports/' + str(report) + '/custom_field_values',
+                auth=(settings.api_name, settings.api_key),
+                json=data,
+                headers=settings.headers,
+                timeout=(5, 10)
+            )
+            r.raise_for_status()
+            if verbose:
+                print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+                print(r.json())
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+            raise
 
 def write_to_csv(report_id, predictedValidity, predictedComplexity, productArea, squadOwner):
     """
