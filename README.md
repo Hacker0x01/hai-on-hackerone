@@ -2,7 +2,7 @@
 
 # Hai on Hackerone
 
-Leveraging Hai through our API. This repository contains a few tools allowing retrieving and processing reports from the HackerOne API. It can fetch reports matching specified filters, send them to the Hai (HackerOne's Copilot) for triage, and perform actions like posting comments and populating custom fields based on the AI response.
+Leveraging Hai through our API. This repository contains a few tools allowing retrieving and processing reports from the HackerOne API. It can fetch reports matching specified filters, send them to the Hai (HackerOne's AI Copilot) for triage, and perform actions like posting comments and populating custom fields based on the AI response.
 
 ## Table of Contents
 
