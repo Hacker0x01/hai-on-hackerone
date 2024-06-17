@@ -1,0 +1,15 @@
+# hidden files
+.env
+
+# csv files 
+*.csv
+
+#directories
+.git/
+.vscode/
+webserver/data/
+cli/data/
+cli/htmlcov/
+**/__pycache__/
+**/.pytest_cache/
+watcher/__pycache__
