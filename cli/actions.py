@@ -13,14 +13,10 @@ Functions:
 import csv
 
 import requests
-from config import (load_actions_variables, load_api_variables,
-                    load_csv_output_file)
+from config import load_settings
 from utils import bcolors
 
-# Load API/Actions/File variables
-api_name, api_key, program_handle, headers = load_api_variables()
-cf_1, cf_2, cf_3, cf_4 = load_actions_variables()
-csv_output_file = load_csv_output_file()
+settings = load_settings()
 
 def hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report_id, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose):
     """
@@ -109,9 +105,9 @@ def post_private_comment(report, predictedValidity, predictedValidityCertaintySc
 
     r = requests.post(
         'https://api.hackerone.com/v1/reports/' + str(report) + '/activities',
-        auth=(api_name, api_key),
+        auth=(settings.api_name, settings.api_key),
         json=data,
-        headers=headers,
+        headers=settings.headers,
         timeout=(5, 10)
     )
     if verbose:
@@ -134,10 +130,10 @@ def update_custom_field(report, predictedValidity, predictedComplexity, productA
         None
     """
     field_updates = {
-        cf_1: predictedValidity,
-        cf_2: predictedComplexity,
-        cf_3: productArea,
-        cf_4: squadOwner
+        settings.cf_1: predictedValidity,
+        settings.cf_2: predictedComplexity,
+        settings.cf_3: productArea,
+        settings.cf_4: squadOwner
     }
 
     for field_id, field_value in field_updates.items():
@@ -156,9 +152,9 @@ def update_custom_field(report, predictedValidity, predictedComplexity, productA
 
         r = requests.post(
             'https://api.hackerone.com/v1/reports/' + str(report) + '/custom_field_values',
-            auth=(api_name, api_key),
+            auth=(settings.api_name, settings.api_key),
             json=data,
-            headers=headers,
+            headers=settings.headers,
             timeout=(5, 10)
         )
         if verbose:
@@ -180,7 +176,7 @@ def write_to_csv(report_id, predictedValidity, predictedComplexity, productArea,
         str: A message indicating that the CSV output file has been successfully updated.
     """
     print(f"{bcolors.OKBLUE}Beginning the process of writing to the CSV file...{bcolors.ENDC}")
-    with open(csv_output_file, "a+", encoding='UTF-8') as file:
+    with open(settings.csv_output_file_path, "a+", encoding='UTF-8') as file:
         csv_writer = csv.writer(file)
         if file.tell() == 0:
             csv_writer.writerow(["Report ID", "Predicted Validity", "Predicted Difficulty", "Product Area", "Squad Owner"])

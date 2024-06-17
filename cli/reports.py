@@ -8,9 +8,9 @@ import requests
 from actions import hai_actions
 from utils import bcolors
 from hai import send_to_hai
-from config import load_api_variables
+from config import load_settings
 
-api_name, api_key, program_handle, headers = load_api_variables()
+settings = load_settings()
 
 async def get_all_reports(
         severity,
@@ -40,7 +40,7 @@ async def get_all_reports(
 
     while url:
         params = {
-            'filter[program][]': [program_handle],
+            'filter[program][]': [settings.program_handle],
             'filter[severity][]': [severity],
             'filter[state][]': [state],
             'page[number]': pageNum
@@ -50,9 +50,9 @@ async def get_all_reports(
 
         r = requests.get(
             url,
-            auth=(api_name, api_key),
+            auth=(settings.api_name, settings.api_key),
             params=params,
-            headers=headers,
+            headers=settings.headers,
             timeout=(5, 10)
         )
         response = r.json()
@@ -90,12 +90,12 @@ async def get_reports(reportIDs, severity, state, comment_hai_flag, custom_field
 
         r = requests.get(
             urlreport,
-            auth=(api_name, api_key),
+            auth=(settings.api_name, settings.api_key),
             params={
                 'filter[severity][]': [severity],
                 'filter[state][]': [state]
             },
-            headers = headers,
+            headers=settings.headers,
             timeout=(5, 10)
         )
         response = r.json()

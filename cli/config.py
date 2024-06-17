@@ -1,3 +1,4 @@
+# pylint: disable=R0902,R0903
 """
 Config module
 """
@@ -6,53 +7,44 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def load_api_variables():
+class Settings:
     """
-    Load API variables from environment variables.
+    Settings class
+    """
+    def __init__(self):
+        """
+        Initialize settings
+
+        api_name (str): The name of the API.
+        api_key (str): The API key.
+        program_handle (str): The handle of the program.
+        headers (dict): The headers for API requests.
+        cf_1 (str): The custom field ID for validity.
+        cf_2 (str): The custom field ID for complexity.
+        cf_3 (str): The custom field ID for product area.
+        cf_4 (str): The custom field ID for squad owner.
+        ownership_file_path (str): The path to the ownership file.
+        csv_output_file (str): The path to the CSV output file.
+        """
+        self.api_name = os.environ["API_NAME"]
+        self.api_key = os.environ["API_KEY"]
+        self.program_handle = os.environ["PROGRAM_HANDLE"]
+        self.headers = {'Accept': 'application/json'}
+
+        self.cf_1 = os.getenv("CUSTOM_FIELD_ID_VALIDITY")
+        self.cf_2 = os.getenv("CUSTOM_FIELD_ID_COMPLEXITY")
+        self.cf_3 = os.getenv("CUSTOM_FIELD_ID_PRODUCT_AREA")
+        self.cf_4 = os.getenv("CUSTOM_FIELD_ID_SQUAD_OWNER")
+
+        script_dir = os.path.dirname(__file__)
+        self.ownership_file_path = os.getenv('OWNERSHIP_FILE', f"{script_dir}/config-data/ownership.csv")
+        self.csv_output_file_path = os.getenv("CSV_OUTPUT_FILE", f"{script_dir}/data/hai-on-hackerone-output.csv")
+
+def load_settings():
+    """
+    Load settings from environment variables.
 
     Returns:
-      api_name (str): The name of the API.
-      api_key (str): The API key.
-      program_handle (str): The handle of the program.
-      headers (dict): The headers for API requests.
+      Settings: An object containing all the settings.
     """
-    api_name = os.environ["API_NAME"]
-    api_key = os.environ["API_KEY"]
-    program_handle = os.environ["PROGRAM_HANDLE"]
-
-    headers = {'Accept': 'application/json'}
-    return api_name, api_key, program_handle, headers
-
-def load_actions_variables():
-    """
-    Load action variables from environment variables.
-
-    Returns:
-      cf_1 (str): The custom field ID for validity.
-      cf_2 (str): The custom field ID for complexity.
-      cf_3 (str): The custom field ID for product area.
-      cf_4 (str): The custom field ID for squad owner.
-    """
-    cf_1 = os.getenv("CUSTOM_FIELD_ID_VALIDITY")
-    cf_2 = os.getenv("CUSTOM_FIELD_ID_COMPLEXITY")
-    cf_3 = os.getenv("CUSTOM_FIELD_ID_PRODUCT_AREA")
-    cf_4 = os.getenv("CUSTOM_FIELD_ID_SQUAD_OWNER")
-    return cf_1, cf_2, cf_3, cf_4
-
-def load_ownership_file():
-    """
-    Load ownership file from environment variable.
-
-    Returns:
-      ownership (str): The path to the ownership file.
-    """
-    return os.getenv("OWNERSHIP_FILE", "./cli/config/ownership.csv.sample")
-
-def load_csv_output_file():
-    """
-    Load CSV output file from environment variable.
-
-    Returns:
-      csv_output_file (str): The path to the CSV output file.
-    """
-    return os.getenv("CSV_OUTPUT_FILE", "./cli/data/hai-on-hackerone-output.csv")
+    return Settings()

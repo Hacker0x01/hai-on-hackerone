@@ -5,7 +5,7 @@ import asyncio
 import unittest
 from unittest.mock import call, patch
 
-from reports import (get_reports, load_api_variables, show_reports,
+from reports import (get_reports, load_settings, show_reports,
                          show_single_report)
 
 class TestLoadApiVariables(unittest.TestCase):
@@ -21,12 +21,12 @@ class TestLoadApiVariables(unittest.TestCase):
         """
         Test case for the load_api_variables function.
         """
-        api_name, api_key, program_handle, headers = load_api_variables()
+        settings = load_settings()
 
-        self.assertEqual(api_name, 'test_name')
-        self.assertEqual(api_key, 'test_key')
-        self.assertEqual(program_handle, 'test_handle')
-        self.assertEqual(headers, {'Accept': 'application/json'})
+        self.assertEqual(settings.api_name, 'test_name')
+        self.assertEqual(settings.api_key, 'test_key')
+        self.assertEqual(settings.program_handle, 'test_handle')
+        self.assertEqual(settings.headers, {'Accept': 'application/json'})
 
 class TestReports(unittest.TestCase):
     """

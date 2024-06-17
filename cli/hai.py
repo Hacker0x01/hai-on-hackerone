@@ -17,11 +17,9 @@ import asyncio
 import time
 import aiohttp
 from utils import parse_json_with_control_chars, bcolors
-from config import load_api_variables, load_ownership_file
+from config import load_settings
 
-# Load API/Files variables
-api_name, api_key, program_handle, headers = load_api_variables()
-ownership = load_ownership_file()
+settings = load_settings()
 
 async def send_to_hai(report, verbose):
     """
@@ -45,7 +43,7 @@ async def send_to_hai(report, verbose):
             - squadOwner (str): The squad owner responsible for the product area.
 
     """
-    with open(ownership, encoding='UTF-8') as file:
+    with open(settings.ownership_file_path, encoding='UTF-8') as file:
         csv_data = [line.strip() for line in file.readlines() if line.strip()]
 
     prompts = [
@@ -128,7 +126,7 @@ async def send_individual_prompt(prompt, report, verbose):
             print(data)
 
         try:
-            async with session.post('https://api.hackerone.com/v1/hai/chat/completions', auth=aiohttp.BasicAuth(api_name, api_key), json=data, headers=headers) as r:
+            async with session.post('https://api.hackerone.com/v1/hai/chat/completions', auth=aiohttp.BasicAuth(settings.api_name, settings.api_key), json=data, headers=settings.headers) as r:
                 response_data = await r.json()
                 if verbose:
                     print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
@@ -162,6 +160,6 @@ async def wait_for_hai(response_data, verbose=False):
         prefix = "https://api.hackerone.com/v1/hai/chat/completions/"
         url = prefix + response_data['data']['id']
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, auth=aiohttp.BasicAuth(api_name, api_key)) as r:
+            async with session.get(url, auth=aiohttp.BasicAuth(settings.api_name, settings.api_key)) as r:
                 new_response_data = await r.json()
                 return await wait_for_hai(new_response_data, verbose)
