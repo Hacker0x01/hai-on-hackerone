@@ -19,7 +19,9 @@ jobs:
       run: |
         echo "Running tests..."
         cd cli/
-        PAD=$(pwd)
-        echo $PAD
         python3 -m unittest discover tests
         echo "All tests passed!"
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+        API_NAME: ${{ secrets.API_NAME }}
+        PROGRAM_HANDLE: ${{ secrets.PROGRAM_HANDLE }}
