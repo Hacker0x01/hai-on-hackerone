@@ -2,7 +2,7 @@
 
 # Hai on Hackerone
 
-Leveraging Hai through our API. This repository contains a few tools allowing retrieving and processing reports from the HackerOne API. It can fetch reports matching specified filters, send them to the Hai (HackerOne's AI Copilot) for triage, and perform actions like posting comments and populating custom fields based on the AI response.
+Leveraging [Hai](https://www.hackerone.com/hai-your-hackerone-ai-copilot) through our API. This repository contains a few tools that allow for retrieving and processing reports from the HackerOne API. It can fetch reports matching specified filters, send them to Hai (HackerOne's AI Copilot) for triage, and perform actions like posting comments and populating custom fields based on Hai's response.
 
 ## Table of Contents
 
@@ -21,9 +21,9 @@ Leveraging Hai through our API. This repository contains a few tools allowing re
 
 - **Fetching Reports**: The script retrieves reports that match our specified filters, such as program, severity, and state. This allows us to focus on the most critical issues first.
 
-- **AI-Powered Triage**: Reports are sent to HackerOne AI for assessment. The AI evaluates each report and provides insights, helping us determine the validity and urgency of the issues.
+- **AI-Powered Triage**: Reports are sent to Hai for assessment. Hai evaluates each report and provides insights, helping us determine the validity and urgency of the issues.
 
-- **Automated Actions**: Based on the AI’s response, the script can post private comments on reports, update custom fields, and export responses to a CSV file for further analysis.
+- **Automated Actions**: Based on Hai's response, the script can post private comments on reports, update custom fields, and export responses to a CSV file for further analysis.
 
 ## Quick Start
 
@@ -84,7 +84,7 @@ python3 main.py --report 12345 --custom_field_hai
 
 ## Webhook Endpoint
 
-The project also includes a webhook endpoint that can be used to receive and process reports. To use this endpoint, you'll need to configure your HackerOne API settings in the `.env` file.
+The project also includes a webhook endpoint for receiving and processing reports. Configure your HackerOne API settings in the `.env` file to use this endpoint.
 
 Here's an example of how you can use the webhook endpoint:
 
@@ -111,4 +111,4 @@ Contributions are welcome! Please open an issue or PR for any enhancements.
 
 ## Troubleshooting
 
-If you encounter any issues, please report them.
+If you encounter any issues, please don't hesitate to [report](https://github.com/Hacker0x01/hai-on-hackerone/issues/new/choose) them.
