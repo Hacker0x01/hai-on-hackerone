@@ -66,12 +66,12 @@ async def get_all_reports(
             print(f"{bcolors.OKCYAN}No Further Pages{bcolors.ENDC}")
             url = None
 
-async def get_reports(reportIDs, severity, state, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose):
+async def get_reports(report_ids, severity, state, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose):
     """
     Retrieves specific reports from the HackerOne API based on the provided report IDs.
 
     Args:
-        reportIDs (list): A list of report IDs to retrieve.
+        report_ids (list): A list of report IDs to retrieve.
         severity (str): The severity level of the reports to retrieve.
         state (str): The state of the reports to retrieve.
         comment_hai_flag (bool): Flag indicating whether to comment on the reports using HAI.
@@ -85,7 +85,7 @@ async def get_reports(reportIDs, severity, state, comment_hai_flag, custom_field
     url = "https://api.hackerone.com/v1/reports/"
     # WIP Multiple report numbers are not saved in reportList
     reportList = []
-    for report in reportIDs:
+    for report in report_ids:
         urlreport = url + str(report)
 
         r = requests.get(
@@ -103,10 +103,10 @@ async def get_reports(reportIDs, severity, state, comment_hai_flag, custom_field
         predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner = await send_to_hai(report, verbose)
         hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
     print("_____________")
-    if len(reportIDs) == 1:
+    if len(report_ids) == 1:
         print(f"{bcolors.OKCYAN}1 report has been successfully processed{bcolors.ENDC}")
     else:
-        print(f"{bcolors.OKCYAN}{len(reportIDs)} reports have been successfully processed{bcolors.ENDC}")
+        print(f"{bcolors.OKCYAN}{len(report_ids)} reports have been successfully processed{bcolors.ENDC}")
 
 async def show_reports(response, verbose, comment_hai_flag, custom_field_hai_flag, csv_output_flag):
     """
@@ -123,19 +123,19 @@ async def show_reports(response, verbose, comment_hai_flag, custom_field_hai_fla
         None
     """
     print(response)
-    reportIDs = []
+    report_ids = []
     for report in response["data"]:
         show_single_report(report)
-        reportIDs.append(report["id"])
+        report_ids.append(report["id"])
     print("All done!")
     counter = 0
-    for report in reportIDs:
+    for report in report_ids:
         counter += 1
-        print(f"{bcolors.OKCYAN}Processing report {counter} of {len(reportIDs)}{bcolors.ENDC}")
+        print(f"{bcolors.OKCYAN}Processing report {counter} of {len(report_ids)}{bcolors.ENDC}")
         print(f"{bcolors.OKCYAN}Sending report {report} to Hai...{bcolors.ENDC}")
         predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner = await send_to_hai(report, verbose)
         hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
-    print(f"{bcolors.OKCYAN}{len(reportIDs)} reports has been successfully processed{bcolors.ENDC}")
+    print(f"{bcolors.OKCYAN}{len(report_ids)} reports has been successfully processed{bcolors.ENDC}")
 
 def show_single_report(report):
     """
