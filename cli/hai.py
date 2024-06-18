@@ -134,7 +134,7 @@ async def send_individual_prompt(prompt, report, verbose):
                     print(response_data)
                 return await wait_for_hai(response_data, verbose)
         except Exception as err:
-            print(colored(f"Unexpected {err=}, {type(err)=}", 'red'))
+            print(colored(f"Unexpected {err=}, {type(err)=}", 'light_red'))
             raise err
 
 async def wait_for_hai(response_data, verbose=False):

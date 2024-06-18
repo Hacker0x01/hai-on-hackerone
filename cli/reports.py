@@ -60,7 +60,7 @@ async def get_all_reports(
             response = r.json()
             print("Results Page: "+ str(pageNum))
         except requests.exceptions.RequestException as e:
-            print(colored(f"An error occurred: {e}"),'red')
+            print(colored(f"An error occurred: {e}"),'light_red')
             raise
         await show_reports(response, verbose, comment_hai_flag, custom_field_hai_flag, csv_output_flag)
 
@@ -111,7 +111,7 @@ async def get_reports(report_ids, severity, state, comment_hai_flag, custom_fiel
             hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
             print("_____________")
         except requests.exceptions.RequestException as e:
-            print(colored(f"An error occurred: {e}"),'red')
+            print(colored(f"An error occurred: {e}"),'light_red')
             raise
     if len(report_ids) == 1:
         print(colored("1 report has been successfully processed", 'cyan'))
@@ -174,5 +174,5 @@ def show_single_report(report):
         else:
             print("Reporter Signal: N/A")
     except Exception as err:
-        print(colored(f"Unexpected {err=}, {type(err)=}", 'red'))
+        print(colored(f"Unexpected {err=}, {type(err)=}", 'light_red'))
         raise err

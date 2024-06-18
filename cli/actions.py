@@ -116,7 +116,7 @@ def post_private_comment(report, predictedValidity, predictedValidityCertaintySc
             print(colored("Response from Hai", 'light_blue'))
             print(r.json())
     except requests.exceptions.RequestException as e:
-        print(colored(f"An error occurred: {e}"),'red')
+        print(colored(f"An error occurred: {e}"),'light_red')
         raise
 
 def update_custom_field(report, predictedValidity, predictedComplexity, productArea, squadOwner, verbose):
@@ -168,7 +168,7 @@ def update_custom_field(report, predictedValidity, predictedComplexity, productA
                 print(colored("Response from Hai", 'light_blue'))
                 print(r.json())
         except requests.exceptions.RequestException as e:
-            print(colored(f"An error occurred: {e}"),'red')
+            print(colored(f"An error occurred: {e}"),'light_red')
             raise
 
 def write_to_csv(report_id, predictedValidity, predictedComplexity, productArea, squadOwner):

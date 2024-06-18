@@ -32,15 +32,16 @@ def strip_surrounding_text(text):
         TypeError: If the input is None.
         AttributeError: If the input does not have the required attributes.
     """
-    try:
-        pattern = r'{(.*?)}'
-        match = re.search(pattern, text, re.DOTALL)
-        if match is None:
-            result = text
-        else:
-            result = "{" + match.group(1) + "}"
-    except (ValueError, TypeError, AttributeError) as error:
-        print(colored(f"Error! {error}", 'red'))
+    if text is None:
+        raise TypeError(colored("Input is None", 'light_red'))
+    if not isinstance(text, str):
+        raise ValueError(colored("Input is not a string", 'light_red'))
+    pattern = r'{(.*?)}'
+    match = re.search(pattern, text, re.DOTALL)
+    if match is None:
+        result = text
+    else:
+        result = "{" + match.group(1) + "}"
     return result
 
 
@@ -59,6 +60,6 @@ def parse_json_with_control_chars(json_string):
         json_string = codecs.escape_decode(json_string)[0].decode('UTF-8')
         data = json.loads(json_string)
     except json.JSONDecodeError as e:
-        print(colored(f"Invalid JSON: {e}"), 'red')
+        print(colored(f"Invalid JSON: {e}"), 'light_red')
         data = None
     return data
