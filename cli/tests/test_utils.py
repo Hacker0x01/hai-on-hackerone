@@ -80,6 +80,3 @@ class TestUtils(unittest.TestCase):
         invalid_json_string = r'{"name": "John", "age": 30, "city": "New York"'
         actual_data = parse_json_with_control_chars(invalid_json_string)
         self.assertIsNone(actual_data)
-
-if __name__ == '__main__':
-    unittest.main()
