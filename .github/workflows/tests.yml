@@ -36,9 +36,11 @@ jobs:
         PROGRAM_HANDLE: ${{ secrets.PROGRAM_HANDLE }}
     - name: Upload coverage report to Codecov
       uses: codecov/codecov-action@v4
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true # optional (default = false)
+        verbose: true # optional (default = false)
         file: ./coverage.xml
         flags: unittests
         name: codecov-umbrella
-        fail_ci_if_error: true
