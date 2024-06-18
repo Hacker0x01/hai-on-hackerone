@@ -92,7 +92,7 @@ async def get_reports(report_ids, severity, state, comment_hai_flag, custom_fiel
     reportList = []
     for report in report_ids:
         urlreport = url + str(report)
-        
+
         try:
             r = requests.get(
                 urlreport,
