@@ -6,9 +6,9 @@ This module contains functions for retrieving and processing reports from the Ha
 """
 import requests
 from actions import hai_actions
-from utils import bcolors
 from hai import send_to_hai
 from config import load_settings
+from termcolor import colored
 
 settings = load_settings()
 
@@ -60,7 +60,7 @@ async def get_all_reports(
             response = r.json()
             print("Results Page: "+ str(pageNum))
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred: {e}")
+            print(colored(f"An error occurred: {e}"),'light_red')
             raise
         await show_reports(response, verbose, comment_hai_flag, custom_field_hai_flag, csv_output_flag)
 
@@ -68,7 +68,7 @@ async def get_all_reports(
             print(response["links"])
             pageNum += 1
         else:
-            print(f"{bcolors.OKCYAN}No Further Pages{bcolors.ENDC}")
+            print(colored("No further pages", 'cyan'))
             url = None
 
 async def get_reports(report_ids, severity, state, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose):
@@ -111,12 +111,12 @@ async def get_reports(report_ids, severity, state, comment_hai_flag, custom_fiel
             hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
             print("_____________")
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred: {e}")
+            print(colored(f"An error occurred: {e}"),'light_red')
             raise
     if len(report_ids) == 1:
-        print(f"{bcolors.OKCYAN}1 report has been successfully processed{bcolors.ENDC}")
+        print(colored("1 report has been successfully processed", 'cyan'))
     else:
-        print(f"{bcolors.OKCYAN}{len(report_ids)} reports have been successfully processed{bcolors.ENDC}")
+        print(colored(f"{len(report_ids)} reports have been successfully processed", 'cyan'))
 
 async def show_reports(response, verbose, comment_hai_flag, custom_field_hai_flag, csv_output_flag):
     """
@@ -141,11 +141,12 @@ async def show_reports(response, verbose, comment_hai_flag, custom_field_hai_fla
     counter = 0
     for report in report_ids:
         counter += 1
-        print(f"{bcolors.OKCYAN}Processing report {counter} of {len(report_ids)}{bcolors.ENDC}")
-        print(f"{bcolors.OKCYAN}Sending report {report} to Hai...{bcolors.ENDC}")
+        # print(colored(f"{banner}", 'light_magenta'))
+        print(colored(f"Processing report {counter} of {len(report_ids)}", 'cyan'))
+        print(colored(f"Sending report {report} to Hai...", 'cyan'))
         predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner = await send_to_hai(report, verbose)
         hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, report, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
-    print(f"{bcolors.OKCYAN}{len(report_ids)} reports has been successfully processed{bcolors.ENDC}")
+    print(colored(f"{len(report_ids)} reports have been successfully processed", 'cyan'))
 
 def show_single_report(report):
     """
@@ -173,5 +174,5 @@ def show_single_report(report):
         else:
             print("Reporter Signal: N/A")
     except Exception as err:
-        print(f"{bcolors.FAIL}Unexpected {err=}, {type(err)=}{bcolors.ENDC}")
+        print(colored(f"Unexpected {err=}, {type(err)=}", 'light_red'))
         raise err

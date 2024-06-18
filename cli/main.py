@@ -5,7 +5,8 @@ import argparse
 import asyncio
 import sys
 from reports import get_all_reports, get_reports
-from utils import print_banner, bcolors
+from utils import print_banner
+from termcolor import colored
 
 # Print the banner
 print_banner()
@@ -50,10 +51,10 @@ def run(cli_args):
 
     async def main():
         if report_list:
-            print(f"{bcolors.OKCYAN}Retrieving specified reports{bcolors.ENDC}")
+            print(colored("Retrieving specified reports", 'cyan'))
             await get_reports(report_list, severity, state, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
         else:
-            print(f"{bcolors.OKCYAN}Retrieving all reports matching criteria{bcolors.ENDC}")
+            print(colored("Retrieving all reports matching criteria", 'cyan'))
             await get_all_reports(severity, state, reference, comment_hai_flag, custom_field_hai_flag, csv_output_flag, verbose)
 
     asyncio.run(main())

@@ -14,7 +14,7 @@ import csv
 
 import requests
 from config import load_settings
-from utils import bcolors
+from termcolor import colored
 
 settings = load_settings()
 
@@ -45,13 +45,13 @@ def hai_actions(predictedValidity, predictedValidityCertaintyScore, predictedVal
     - None
     """
     if comment_hai_flag:
-        print(f"{bcolors.OKBLUE}Posting Private Comment...{bcolors.ENDC}")
+        print(colored("Posting Private Comment...", 'light_blue'))
         post_private_comment(report_id, predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner, verbose)
-        print(f"{bcolors.OKGREEN}Private Comment is successfully posted{bcolors.ENDC}")
+        print(colored("Private Comment is successfully posted", 'light_green'))
     if custom_field_hai_flag:
-        print(f"{bcolors.OKBLUE}Updating Custom Fields...{bcolors.ENDC}")
+        print(colored("Updating Custom Fields...", 'light_blue'))
         update_custom_field(report_id, predictedValidity, predictedComplexity, productArea, squadOwner, verbose)
-        print(f"{bcolors.OKGREEN}Custom Fields have been successfully updated{bcolors.ENDC}")
+        print(colored("Custom Fields have been successfully updated", 'light_green'))
     if csv_output_flag:
         write_to_csv(report_id, predictedValidity, predictedComplexity, productArea, squadOwner)
 
@@ -100,7 +100,7 @@ def post_private_comment(report, predictedValidity, predictedValidityCertaintySc
     }
 
     if verbose:
-        print(f"{bcolors.OKBLUE}Data that is sent to Hai{bcolors.ENDC}")
+        print(colored("Data that is sent to Hai", 'light_blue'))
         print(data)
 
     try:
@@ -113,10 +113,10 @@ def post_private_comment(report, predictedValidity, predictedValidityCertaintySc
         )
         r.raise_for_status()
         if verbose:
-            print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+            print(colored("Response from Hai", 'light_blue'))
             print(r.json())
     except requests.exceptions.RequestException as e:
-        print(f"An error occurred: {e}")
+        print(colored(f"An error occurred: {e}"),'light_red')
         raise
 
 def update_custom_field(report, predictedValidity, predictedComplexity, productArea, squadOwner, verbose):
@@ -152,7 +152,7 @@ def update_custom_field(report, predictedValidity, predictedComplexity, productA
         }
 
         if verbose:
-            print(f"{bcolors.OKBLUE}Data that is sent to Hai{bcolors.ENDC}")
+            print(colored("Data that is sent to Hai", 'light_blue'))
             print(data)
 
         try:
@@ -165,10 +165,10 @@ def update_custom_field(report, predictedValidity, predictedComplexity, productA
             )
             r.raise_for_status()
             if verbose:
-                print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+                print(colored("Response from Hai", 'light_blue'))
                 print(r.json())
         except requests.exceptions.RequestException as e:
-            print(f"An error occurred: {e}")
+            print(colored(f"An error occurred: {e}"),'light_red')
             raise
 
 def write_to_csv(report_id, predictedValidity, predictedComplexity, productArea, squadOwner):
@@ -185,11 +185,11 @@ def write_to_csv(report_id, predictedValidity, predictedComplexity, productArea,
     Returns:
         str: A message indicating that the CSV output file has been successfully updated.
     """
-    print(f"{bcolors.OKBLUE}Beginning the process of writing to the CSV file...{bcolors.ENDC}")
+    print(colored("Beginning the process of writing to the CSV file...", 'light_blue'))
     with open(settings.csv_output_file_path, "a+", encoding='UTF-8') as file:
         csv_writer = csv.writer(file)
         if file.tell() == 0:
             csv_writer.writerow(["Report ID", "Predicted Validity", "Predicted Difficulty", "Product Area", "Squad Owner"])
         csv_writer.writerow([report_id, predictedValidity, predictedComplexity, productArea, squadOwner])
-    print(f"{bcolors.OKGREEN}The CSV output file has been successfully updated{bcolors.ENDC}")
+    print(colored("The CSV output file has been successfully updated", 'light_green'))
     return "Done"

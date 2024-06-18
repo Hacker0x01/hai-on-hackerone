@@ -16,8 +16,9 @@ Functions:
 import asyncio
 import time
 import aiohttp
-from utils import parse_json_with_control_chars, bcolors
+from utils import parse_json_with_control_chars
 from config import load_settings
+from termcolor import colored
 
 settings = load_settings()
 
@@ -76,8 +77,8 @@ async def send_to_hai(report, verbose):
     if verbose:
         end_time = time.time()
         execution_time = end_time - start_time
-        print(f"{bcolors.OKCYAN}Execution Time: {execution_time} seconds{bcolors.ENDC}")
-        print(f"{bcolors.OKBLUE}Responses from Hai: {bcolors.ENDC}")
+        print(colored(f"Execution Time: {execution_time} seconds", 'cyan'))
+        print(colored("Responses from Hai:", 'blue'))
         print(responses)
 
     pV = parse_json_with_control_chars(responses[0]['response'])
@@ -122,18 +123,18 @@ async def send_individual_prompt(prompt, report, verbose):
         }
 
         if verbose:
-            print(f"{bcolors.OKBLUE}Request that is sent to Hai{bcolors.ENDC}")
+            print(colored("Request that is sent to Hai", 'blue'))
             print(data)
 
         try:
             async with session.post('https://api.hackerone.com/v1/hai/chat/completions', auth=aiohttp.BasicAuth(settings.api_name, settings.api_key), json=data, headers=settings.headers) as r:
                 response_data = await r.json()
                 if verbose:
-                    print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+                    print(colored("Response from Hai", 'blue'))
                     print(response_data)
                 return await wait_for_hai(response_data, verbose)
         except Exception as err:
-            print(f"{bcolors.FAIL}Unexpected {err=}, {type(err)=}{bcolors.ENDC}")
+            print(colored(f"Unexpected {err=}, {type(err)=}", 'light_red'))
             raise err
 
 async def wait_for_hai(response_data, verbose=False):
@@ -149,13 +150,13 @@ async def wait_for_hai(response_data, verbose=False):
 
     """
     if verbose:
-        print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+        print(colored("Response from Hai", 'blue'))
         print(response_data)
     if response_data['data']['attributes']['state'] == 'completed':
-        print(f"{bcolors.OKGREEN}Response received and the request has been successfully completed!{bcolors.ENDC}")
+        print(colored("Response received and the request has been successfully completed!", 'light_green'))
         return response_data['data']['attributes']
     else:
-        print(f"{bcolors.WAITING}Waiting...{bcolors.ENDC}")
+        print(colored("Waiting...", 'light_grey'))
         await asyncio.sleep(2)
         prefix = "https://api.hackerone.com/v1/hai/chat/completions/"
         url = prefix + response_data['data']['id']
