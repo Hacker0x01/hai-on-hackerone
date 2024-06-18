@@ -9,5 +9,5 @@ pylint==3.2.3
 pytest==8.2.1
 pytest-asyncio==0.23.7
 python-dotenv==1.0.1
-requests==2.31.0
+requests==2.32.2
 watchdog==4.0.1
