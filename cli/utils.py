@@ -5,23 +5,9 @@ Utility functions for the CLI.
 import codecs
 import json
 import re
-from enum import StrEnum
+from termcolor import colored
 
 import pyfiglet
-
-class bcolors(StrEnum):
-    """
-    A class that defines ANSI escape codes for text colors in the terminal.
-    """
-
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WAITING = '\033[37m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
 
 def print_banner():
     """
@@ -29,7 +15,7 @@ def print_banner():
     """
     print("\n")
     banner = pyfiglet.figlet_format("H1ONH1", font="banner")
-    print(f"{bcolors.HEADER}{banner}{bcolors.ENDC}")
+    print(colored(f"{banner}", 'light_magenta'))
 
 def strip_surrounding_text(text):
     """
@@ -54,7 +40,7 @@ def strip_surrounding_text(text):
         else:
             result = "{" + match.group(1) + "}"
     except (ValueError, TypeError, AttributeError) as error:
-        print(f"{bcolors.FAIL}Error! {error} {bcolors.ENDC}")
+        print(colored(f"Error! {error}", 'red'))
     return result
 
 
@@ -73,6 +59,6 @@ def parse_json_with_control_chars(json_string):
         json_string = codecs.escape_decode(json_string)[0].decode('UTF-8')
         data = json.loads(json_string)
     except json.JSONDecodeError as e:
-        print(f"Invalid JSON: {e}")
+        print(colored(f"Invalid JSON: {e}"), 'red')
         data = None
     return data

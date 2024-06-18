@@ -16,8 +16,9 @@ Functions:
 import asyncio
 import time
 import aiohttp
-from utils import parse_json_with_control_chars, bcolors
+from utils import parse_json_with_control_chars
 from config import load_settings
+from termcolor import colored
 
 settings = load_settings()
 
@@ -56,7 +57,7 @@ async def send_to_hai(report, verbose):
         {
             "role": "user",
             "content": f"""
-            Based on the provided information your task is to evaluate the complexity of the security report with ID {report}. When assessing difficulty, use a percentage scale to evaluate if the level of effort required to reproduce the vulnerability based on the report's content. Consider a report high on difficulty when it demands extensive setup, involves numerous steps, or requires specialized expertise beyond common web application security. This includes reports necessitating multiple accounts with different permissions, configuring and installing applications, or following complex steps for reproducing the vulnerability. Conversely, reports that are straightforward to reproduce, lack detailed information, or feature minimal content are categorized on low difficulty. Provide a percentage value of how certain you are that the report is difficult, where 0 is not difficult at all and 100 is extremely difficult. Your response should be in, without any exception, JSON format without newlines with the following structure: "predictedComplexity": [Low/Medium/High], "complexityCertaintyScore": [0-100%], "complexityReasoning": [Reasoning for the decision]. Please approach the problem methodically and ensure that your reasoning for the decision is clearly outlined. Even if certain information is lacking, use your judgment to make an educated guess to facilitate a streamlined assessment process. Now, take a deep breath and work on this problem step by step. Good luck!
+            Based on the provided information your task is to evaluate the complexity of the security report with ID {report}. When assessing difficulty, use a percentage scale to evaluate if the level of effort required to reproduce the vulnerability based on the report's content. Consider a report high on difficulty when it demands extensive setup, involves numerous steps, or requires specialized expertise beyond common web application security. This includes reports necessitating multiple accounts with different permissions, configuring and installing applications, or following complex steps for reproducing the vulnerability. Conversely, reports that are straightforward to reproduce, lack detailed information, or feature minimal content are categorized on low difficulty. Provide a percentage value of how certain you are that the report is difficult, where 0 is not difficult at all and 100 is extremely difficult. Please approach the problem methodically and ensure that your reasoning for the decision is clearly outlined. Even if certain information is lacking, use your judgment to make an educated guess to facilitate a streamlined assessment process. Now, take a deep breath and work on this problem step by step. Good luck!
             """
         },
         {
@@ -76,8 +77,8 @@ async def send_to_hai(report, verbose):
     if verbose:
         end_time = time.time()
         execution_time = end_time - start_time
-        print(f"{bcolors.OKCYAN}Execution Time: {execution_time} seconds{bcolors.ENDC}")
-        print(f"{bcolors.OKBLUE}Responses from Hai: {bcolors.ENDC}")
+        print(colored(f"Execution Time: {execution_time} seconds", 'cyan'))
+        print(colored("Responses from Hai:", 'blue'))
         print(responses)
 
     pV = parse_json_with_control_chars(responses[0]['response'])
@@ -122,18 +123,18 @@ async def send_individual_prompt(prompt, report, verbose):
         }
 
         if verbose:
-            print(f"{bcolors.OKBLUE}Request that is sent to Hai{bcolors.ENDC}")
+            print(colored("Request that is sent to Hai", 'blue'))
             print(data)
 
         try:
             async with session.post('https://api.hackerone.com/v1/hai/chat/completions', auth=aiohttp.BasicAuth(settings.api_name, settings.api_key), json=data, headers=settings.headers) as r:
                 response_data = await r.json()
                 if verbose:
-                    print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+                    print(colored("Response from Hai", 'blue'))
                     print(response_data)
                 return await wait_for_hai(response_data, verbose)
         except Exception as err:
-            print(f"{bcolors.FAIL}Unexpected {err=}, {type(err)=}{bcolors.ENDC}")
+            print(colored(f"Unexpected {err=}, {type(err)=}", 'red'))
             raise err
 
 async def wait_for_hai(response_data, verbose=False):
@@ -149,13 +150,13 @@ async def wait_for_hai(response_data, verbose=False):
 
     """
     if verbose:
-        print(f"{bcolors.OKBLUE}Response from Hai{bcolors.ENDC}")
+        print(colored("Response from Hai", 'blue'))
         print(response_data)
     if response_data['data']['attributes']['state'] == 'completed':
-        print(f"{bcolors.OKGREEN}Response received and the request has been successfully completed!{bcolors.ENDC}")
+        print(colored("Response received and the request has been successfully completed!", 'light_green'))
         return response_data['data']['attributes']
     else:
-        print(f"{bcolors.WAITING}Waiting...{bcolors.ENDC}")
+        print(colored("Waiting...", 'light_grey'))
         await asyncio.sleep(2)
         prefix = "https://api.hackerone.com/v1/hai/chat/completions/"
         url = prefix + response_data['data']['id']
