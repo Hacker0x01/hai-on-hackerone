@@ -85,16 +85,16 @@ async def send_to_hai(report, verbose):
     pC = parse_json_with_control_chars(responses[1]['response'])
     pO = parse_json_with_control_chars(responses[2]['response'])
 
-    predictedValidity = pV['predictedValidity']
-    predictedValidityCertaintyScore = pV['validityCertaintyScore']
-    predictedValidityReasoning = pV['validityReasoning']
-    predictedComplexity = pC['predictedComplexity']
-    predictedComplexityCertaintyScore = pC['complexityCertaintyScore']
-    predictedComplexityReasoning = pC['complexityReasoning']
-    predictedOwnershipCertaintyScore = pO['ownershipCertaintyScore']
-    predictedOwnershipReasoning = pO['ownershipReasoning']
-    productArea = pO['productArea']
-    squadOwner = pO['squadOwner']
+    predictedValidity = pV['predictedValidity'] if pV else None
+    predictedValidityCertaintyScore = pV['validityCertaintyScore'] if pV else None
+    predictedValidityReasoning = pV['validityReasoning'] if pV else None
+    predictedComplexity = pC['predictedComplexity'] if pC else None
+    predictedComplexityCertaintyScore = pC['complexityCertaintyScore'] if pC else None
+    predictedComplexityReasoning = pC['complexityReasoning'] if pC else None
+    predictedOwnershipCertaintyScore = pO['ownershipCertaintyScore'] if pO else None
+    predictedOwnershipReasoning = pO['ownershipReasoning'] if pO else None
+    productArea = pO['productArea'] if pO else None
+    squadOwner = pO['squadOwner'] if pO else None
 
     return predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner
 
