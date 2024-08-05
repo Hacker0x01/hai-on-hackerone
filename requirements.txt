@@ -2,7 +2,7 @@ aiohttp==3.10.0
 aioresponses==0.7.6
 argparse==1.4.0
 asyncio==3.4.3
-coverage==7.6.0
+coverage==7.6.1
 Flask==3.0.3
 pyfiglet==1.0.2
 pylint==3.2.6
