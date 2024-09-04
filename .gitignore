@@ -7,7 +7,6 @@
 #directories
 .git/
 .vscode/
-webserver/data/
 cli/data/
 cli/htmlcov/
 **/__pycache__/
