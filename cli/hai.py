@@ -1,4 +1,3 @@
-# pylint: disable=R1705
 """
 Hai module
 
@@ -25,7 +24,7 @@ settings = load_settings()
 async def send_to_hai(report, verbose):
     """
     Sends prompts to the Hai API and returns the predicted validity, complexity, ownership, and other information of a security report.
-
+    
     Args:
         report (str): The ID of the security report.
         verbose (bool): Whether to print verbose output.
@@ -42,7 +41,6 @@ async def send_to_hai(report, verbose):
             - predictedOwnershipReasoning (str): The reasoning for the predicted ownership.
             - productArea (str): The product area mapped to the security report.
             - squadOwner (str): The squad owner responsible for the product area.
-
     """
     with open(settings.ownership_file_path, encoding='UTF-8') as file:
         csv_data = [line.strip() for line in file.readlines() if line.strip()]
@@ -81,22 +79,40 @@ async def send_to_hai(report, verbose):
         print(colored("Responses from Hai:", 'blue'))
         print(responses)
 
-    pV = parse_json_with_control_chars(responses[0]['response'])
-    pC = parse_json_with_control_chars(responses[1]['response'])
-    pO = parse_json_with_control_chars(responses[2]['response'])
+    if responses[0] is None or 'response' not in responses[0]:
+        print(colored("Error: Validity response is None or invalid.", 'light_red'))
+        return None
 
-    predictedValidity = pV['predictedValidity']
-    predictedValidityCertaintyScore = pV['validityCertaintyScore']
-    predictedValidityReasoning = pV['validityReasoning']
-    predictedComplexity = pC['predictedComplexity']
-    predictedComplexityCertaintyScore = pC['complexityCertaintyScore']
-    predictedComplexityReasoning = pC['complexityReasoning']
-    predictedOwnershipCertaintyScore = pO['ownershipCertaintyScore']
-    predictedOwnershipReasoning = pO['ownershipReasoning']
-    productArea = pO['productArea']
-    squadOwner = pO['squadOwner']
+    if responses[1] is None or 'response' not in responses[1]:
+        print(colored("Error: Complexity response is None or invalid.", 'light_red'))
+        return None
 
-    return predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning, predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning, predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner
+    if responses[2] is None or 'response' not in responses[2]:
+        print(colored("Error: Ownership response is None or invalid.", 'light_red'))
+        return None
+
+    try:
+        pV = parse_json_with_control_chars(responses[0]['response'])
+        pC = parse_json_with_control_chars(responses[1]['response'])
+        pO = parse_json_with_control_chars(responses[2]['response'])
+    except Exception as e:
+        print(colored(f"Error parsing JSON response: {e}", 'light_red'))
+        return None
+
+    predictedValidity = pV.get('predictedValidity', 'Unknown')
+    predictedValidityCertaintyScore = pV.get('validityCertaintyScore', 0)
+    predictedValidityReasoning = pV.get('validityReasoning', 'No reasoning provided')
+    predictedComplexity = pC.get('predictedComplexity', 'Unknown')
+    predictedComplexityCertaintyScore = pC.get('complexityCertaintyScore', 0)
+    predictedComplexityReasoning = pC.get('complexityReasoning', 'No reasoning provided')
+    predictedOwnershipCertaintyScore = pO.get('ownershipCertaintyScore', 0)
+    predictedOwnershipReasoning = pO.get('ownershipReasoning', 'No reasoning provided')
+    productArea = pO.get('productArea', 'Unknown')
+    squadOwner = pO.get('squadOwner', 'Unknown')
+
+    return (predictedValidity, predictedValidityCertaintyScore, predictedValidityReasoning,
+            predictedComplexity, predictedComplexityCertaintyScore, predictedComplexityReasoning,
+            predictedOwnershipCertaintyScore, predictedOwnershipReasoning, productArea, squadOwner)
 
 async def send_individual_prompt(prompt, report, verbose):
     """
@@ -123,18 +139,25 @@ async def send_individual_prompt(prompt, report, verbose):
         }
 
         if verbose:
-            print(colored("Request that is sent to Hai", 'blue'))
+            print(colored("Request sent to Hai:", 'blue'))
             print(data)
 
         try:
             async with session.post('https://api.hackerone.com/v1/hai/chat/completions', auth=aiohttp.BasicAuth(settings.api_name, settings.api_key), json=data, headers=settings.headers) as r:
-                response_data = await r.json()
+                try:
+                    response_data = await r.json()
+                except aiohttp.ContentTypeError:
+                    # Print the raw response text if not JSON
+                    raw_response = await r.text()
+                    print(colored(f"Error: Received non-JSON response from API: {raw_response}", 'light_red'))
+                    return None
+
                 if verbose:
-                    print(colored("Response from Hai", 'blue'))
+                    print(colored("Response from Hai:", 'blue'))
                     print(response_data)
                 return await wait_for_hai(response_data, verbose)
         except Exception as err:
-            print(colored(f"Unexpected {err=}, {type(err)=}", 'light_red'))
+            print(colored(f"Unexpected error: {err}, {type(err)}", 'light_red'))
             raise err
 
 async def wait_for_hai(response_data, verbose=False):
@@ -150,16 +173,20 @@ async def wait_for_hai(response_data, verbose=False):
 
     """
     if verbose:
-        print(colored("Response from Hai", 'blue'))
+        print(colored("Initial response from Hai:", 'blue'))
         print(response_data)
+
+    if not response_data or 'data' not in response_data or 'attributes' not in response_data['data']:
+        print(colored("Error: Invalid response format from API.", 'light_red'))
+        return None
+
     if response_data['data']['attributes']['state'] == 'completed':
         print(colored("Response received and the request has been successfully completed!", 'light_green'))
         return response_data['data']['attributes']
     else:
-        print(colored("Waiting...", 'light_grey'))
+        print(colored("Waiting for response completion...", 'light_grey'))
         await asyncio.sleep(2)
-        prefix = "https://api.hackerone.com/v1/hai/chat/completions/"
-        url = prefix + response_data['data']['id']
+        url = f"https://api.hackerone.com/v1/hai/chat/completions/{response_data['data']['id']}"
         async with aiohttp.ClientSession() as session:
             async with session.get(url, auth=aiohttp.BasicAuth(settings.api_name, settings.api_key)) as r:
                 new_response_data = await r.json()
