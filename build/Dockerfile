@@ -1,4 +1,4 @@
-FROM python:3.13.0a1-alpine
+FROM python:3.13.0rc2-alpine
 
 # Set the work directory to the app folder.
 WORKDIR /hai-on-hackerone
