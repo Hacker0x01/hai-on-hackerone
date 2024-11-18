@@ -1,5 +1,5 @@
 aiohttp==3.11.0
-aioresponses==0.7.6
+aioresponses==0.7.7
 argparse==1.4.0
 asyncio==3.4.3
 coverage==7.6.4
