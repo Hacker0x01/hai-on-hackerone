@@ -1,4 +1,4 @@
-aiohttp==3.12.8
+aiohttp==3.12.9
 aioresponses==0.7.8
 argparse==1.4.0
 asyncio==3.4.3
