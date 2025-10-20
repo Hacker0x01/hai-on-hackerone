@@ -5,7 +5,7 @@ asyncio==4.0.0
 coverage==7.11.0
 Flask==3.1.2
 pyfiglet==1.0.4
-pylint==4.0.1
+pylint==4.0.2
 pytest==8.4.2
 pytest-asyncio==1.2.0
 python-dotenv==1.1.1
